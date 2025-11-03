@@ -1,19 +1,20 @@
 @extends('layouts')
-@section('titulo', 'Listagem de Estadia')
+@section('titulo', 'Listagem de Animais')
 @section('conteudo')
 
-    <h3>Listagem de Estadia</h3>
+    <h3>Listagem de Animais</h3>
 
     <div class="row">
         <div class="col">
-            <form action="{{ route('lodging.search') }}" method="post">
+            <form action="{{ route('animals.search') }}" method="post">
                 @csrf
                 <div class="row">
                     <div class="col-md-3">
                         <label class="form-label">Tipo</label>
                         <select name="tipo" class="form-select">
-                            <option value="nome">Nome do Tutor</option>
                             <option value="nome_animal">Nome do Animal</option>
+                            <option value="raca">Raça</option>
+                            <option value="nome_tutor">Nome do Tutor</option>
                         </select>
                     </div>
                     <div class="col-md-4">
@@ -27,8 +28,8 @@
                         </button>
                     </div>
                     <div class="col-md-2">
-                        <a class="btn btn-success mt-4" href="{{ route('lodging.create') }}">
-                            <i class="fa-solid fa-plus"></i> Novo
+                        <a class="btn btn-success mt-4" href="{{ route('animals.create') }}">
+                            <i class="fa-solid fa-plus"></i> Novo Animal
                         </a>
                     </div>
                 </div>
@@ -49,11 +50,11 @@
                     <thead>
                         <tr>
                             <th>#ID</th>
-                            <th>Tutor</th>
-                            <th>Animal</th>
-                            <th>Raça</th> {{-- NOVO: Coluna para mostrar a raça --}}
-                            <th>Dia Entrada</th>
-                            <th>Dia Saída</th>
+                            <th>Nome do Animal</th>
+                            <th>Raça</th>
+                            <th>Peso (kg)</th>
+                            <th>Nome do Tutor</th>
+                            <th>Telefone</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
@@ -61,20 +62,20 @@
                         @foreach ($dados as $item)
                             <tr>
                                 <td>{{ $item->id }}</td>
-                                <td>{{ $item->nome }}</td>
                                 <td>{{ $item->nome_animal }}</td>
-                                <td>{{ $item->animal->raca ?? '-' }}</td> {{-- NOVO: Mostrar raça do animal --}}
-                                <td>{{ $item->dia_entrada ? \Carbon\Carbon::parse($item->dia_entrada)->format('d/m/Y') : '-' }}</td>
-                                <td>{{ $item->dia_saida ? \Carbon\Carbon::parse($item->dia_saida)->format('d/m/Y') : '-' }}</td>
+                                <td>{{ $item->raca }}</td>
+                                <td>{{ number_format($item->peso, 2) }} kg</td>
+                                <td>{{ $item->nome_tutor }}</td>
+                                <td>{{ $item->telefone_tutor }}</td>
                                 <td>
-                                    <a href="{{ route('lodging.edit', $item->id) }}" class="btn btn-outline-warning btn-sm">
+                                    <a href="{{ route('animals.edit', $item->id) }}" class="btn btn-outline-warning btn-sm">
                                         <i class="fa-solid fa-pen-to-square"></i>
                                     </a>
-                                    <form action="{{ route('lodging.destroy', $item->id) }}" method="post" class="d-inline">
+                                    <form action="{{ route('animals.destroy', $item->id) }}" method="post" class="d-inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-outline-danger"
-                                            onclick="return confirm('Deseja remover este registro?')">
+                                            onclick="return confirm('Deseja remover este animal?')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
@@ -83,9 +84,6 @@
                         @endforeach
                     </tbody>
                 </table>
-            @else
-                <div class="alert alert-info">Nenhuma estadia encontrada.</div>
-            @endif
         </div>
     </div>
 @endsection
