@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 namespace App\Http\Controllers;
 
@@ -18,7 +18,8 @@ class ParkingController extends Controller
     public function index()
     {
         // Eager loading (carrega também o tipo de veículo)
-        $dados = Parking::with('vehicleType')->get();
+        // 🔹 Alterado: de ->get() para ->paginate(10)
+        $dados = Parking::with('vehicleType')->paginate(10);
 
         // Conta apenas os veículos ainda estacionados
         $ocupadas = Parking::whereNull('hora_saida')->count();
@@ -160,7 +161,8 @@ class ParkingController extends Controller
             }
         }
 
-        $dados = $query->get();
+        // 🔹 Alterado: de ->get() para ->paginate(10)
+        $dados = $query->paginate(10)->appends($request->query());
 
         $totalVagas = self::LIMITE_VAGAS;
         $ocupadas = Parking::whereNull('hora_saida')->count();
@@ -176,19 +178,30 @@ class ParkingController extends Controller
 
 public function report()
 {
-    $orders = Order::with('items.product')
-        ->where('user_id', Auth::id())
-        ->orderBy('id')
-        ->get();
+    $dados = Parking::with(['vehicleType', 'weightClass'])->get();
 
     $data = [
-        'titulo' => 'Relatório de Pedidos',
-        'dados'  => $orders,
+        'titulo' => 'Relatório de Estacionamento',
+        'dados'  => $dados,
     ];
 
-    $pdf = \PDF::loadView('orders.report', $data);
+    $pdf = \PDF::loadView('parking.report', $data);
 
-    return $pdf->download('relatorio_pedidos.pdf');
+    return $pdf->download('relatorio_estacionamento.pdf');
 }
+
+public function chart()
+{
+    $dados = \App\Models\Parking::selectRaw('vehicle_type_id, COUNT(*) as total')
+        ->groupBy('vehicle_type_id')
+        ->with('vehicleType')
+        ->get();
+
+    $labels = $dados->map(fn($item) => $item->vehicleType->nome ?? 'Desconhecido');
+    $values = $dados->map(fn($item) => $item->total);
+
+    return view('parking.chart', compact('labels', 'values'));
+}
+
 
 }
