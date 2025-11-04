@@ -11,14 +11,14 @@
                 <div class="row">
                     <div class="col-md-3">
                         <label class="form-label">Tipo</label>
-                        <select name="tipo" class="form-select">
+                        <select id="tipo" name="tipo" class="form-select">
                             <option value="nome">Nome do Tutor</option>
                             <option value="nome_animal">Nome do Animal</option>
                         </select>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Valor</label>
-                        <input type="text" class="form-control" name="valor" placeholder="Pesquisar...">
+                        <input id="valor" type="text" class="form-control" name="valor" placeholder="Pesquisar...">
                     </div>
 
                     <div class="col-md-3">
@@ -27,7 +27,7 @@
                         </button>
                     </div>
                     <div class="col-md-2">
-                        <a class="btn btn-success mt-4" href="{{ route('lodging.create') }}">
+                        <a class="btn btn-success mt-4" href="{{ url('/lodging/create') }}">
                             <i class="fa-solid fa-plus"></i> Novo
                         </a>
                     </div>
@@ -38,54 +38,63 @@
 
     <div class="row mt-4">
         <div class="col">
-            @if(session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            @if($dados->count() > 0)
-                <table class="table table-hover">
-                    <thead>
+            <table class="table table-hover" id="lodgingTable">
+                <thead>
+                    <tr>
+                        <th>#ID</th>
+                        <th>Tutor</th>
+                        <th>Animal</th>
+                        <th>Dia Entrada</th>
+                        <th>Dia Saída</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($dados as $item)
                         <tr>
-                            <th>#ID</th>
-                            <th>Tutor</th>
-                            <th>Animal</th>
-                            <th>Raça</th> {{-- NOVO: Coluna para mostrar a raça --}}
-                            <th>Dia Entrada</th>
-                            <th>Dia Saída</th>
-                            <th>Ações</th>
+                            <td>{{ $item->id }}</td>
+                            <td>{{ $item->nome }}</td>
+                            <td>{{ $item->nome_animal }}</td>
+                            <td>{{ $item->dia_entrada ? \Carbon\Carbon::parse($item->dia_entrada)->format('d/m/Y') : '-' }}</td>
+                            <td>{{ $item->dia_saida ? \Carbon\Carbon::parse($item->dia_saida)->format('d/m/Y') : '-' }}</td>
+                            <td>
+                                <a href="{{ route('lodging.edit', $item->id) }}" class="btn btn-outline-warning btn-sm">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+                                <form action="{{ route('lodging.destroy', $item->id) }}" method="post" class="d-inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                                        onclick="return confirm('Deseja remover este registro?')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($dados as $item)
-                            <tr>
-                                <td>{{ $item->id }}</td>
-                                <td>{{ $item->nome }}</td>
-                                <td>{{ $item->nome_animal }}</td>
-                                <td>{{ $item->animal->raca ?? '-' }}</td> {{-- NOVO: Mostrar raça do animal --}}
-                                <td>{{ $item->dia_entrada ? \Carbon\Carbon::parse($item->dia_entrada)->format('d/m/Y') : '-' }}</td>
-                                <td>{{ $item->dia_saida ? \Carbon\Carbon::parse($item->dia_saida)->format('d/m/Y') : '-' }}</td>
-                                <td>
-                                    <a href="{{ route('lodging.edit', $item->id) }}" class="btn btn-outline-warning btn-sm">
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                    </a>
-                                    <form action="{{ route('lodging.destroy', $item->id) }}" method="post" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger"
-                                            onclick="return confirm('Deseja remover este registro?')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            @else
-                <div class="alert alert-info">Nenhuma estadia encontrada.</div>
-            @endif
+                    @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
+@endsection
+    
+@section('scripts')
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const input = document.getElementById("valor");
+    const tipo = document.getElementById("tipo");
+    const tbody = document.querySelector("#lodgingTable tbody");
+
+    function search() {
+        fetch(`{{ route('lodging.search.ajax') }}?tipo=${tipo.value}&valor=${input.value}`)
+            .then(response => response.text())
+            .then(html => {
+                tbody.innerHTML = html;
+            });
+    }
+
+    input.addEventListener("keyup", search);
+    tipo.addEventListener("change", search);
+});
+</script>
 @endsection

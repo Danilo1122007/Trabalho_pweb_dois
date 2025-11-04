@@ -7,10 +7,10 @@ use Illuminate\Http\Request;
 
 class GroomingController extends Controller
 {
-    public function index()
+public function index()
     {
         $dados = Grooming::all();
-        return view('grooming.list', ['dados' => $dados]);
+        return view('grooming.list', compact('dados'));
     }
 
     public function create()
@@ -24,12 +24,10 @@ class GroomingController extends Controller
             'nome_animal' => 'required',
             'raca' => 'required',
             'horario_atendimento' => 'required',
-            'telefone_tutor' => 'required',
         ], [
             'nome_animal.required' => 'O nome do animal é obrigatório',
             'raca.required' => 'A raça é obrigatória',
             'horario_atendimento.required' => 'O horário de atendimento é obrigatório',
-            'htelefone_tutor.required' => 'O telefone do tutor é obrigatório',
         ]);
     }
 
@@ -65,16 +63,28 @@ class GroomingController extends Controller
     }
 
     public function search(Request $request)
-    {
-        if (!empty($request->valor)) {
-            $dados = Grooming::where(
-                $request->tipo,
-                'like',
-                "%$request->valor%"
-            )->get();
-        } else {
-            $dados = Grooming::all();
-        }
-        return view('grooming.list', ["dados" => $dados]);
+{
+    if (!empty($request->valor)) {
+        $dados = Grooming::where($request->tipo, 'like', "%$request->valor%")->get();
+    } else {
+        $dados = Grooming::all();
     }
+
+    return view('grooming_table', ["dados" => $dados]);
+}
+
+public function searchAjax(Request $request)
+{
+    $tipo = $request->tipo ?? 'nome_cliente';
+    $valor = $request->valor ?? '';
+
+    $dados = Grooming::when($valor, function ($query) use ($tipo, $valor) {
+        $query->where($tipo, 'like', "%{$valor}%");
+    })->get();
+
+    // retorna só o HTML do <tbody>
+    return view('partials.grooming_table', compact('dados'))->render();
+}
+
+
 }

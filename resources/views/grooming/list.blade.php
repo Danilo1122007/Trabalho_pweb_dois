@@ -6,12 +6,12 @@
 
     <div class="row">
         <div class="col">
-            <form action="{{ route('grooming.search') }}" method="post">
+            <form action="{{ route('grooming.search') }}" method="post" class="row g-3">
                 @csrf
                 <div class="row">
                     <div class="col-md-3">
                         <label class="form-label">Tipo</label>
-                        <select name="tipo" class="form-select">
+                        <select id="tipo" name="tipo" class="form-select">
                             <option value="nome_animal">Nome do Animal</option>
                             <option value="raca">Raça</option>
                             <option value="telefone_tutor">Telefone do Tutor</option>
@@ -19,7 +19,7 @@
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Valor</label>
-                        <input type="text" class="form-control" name="valor" placeholder="Pesquisar...">
+                        <input id="valor" type="text" class="form-control" name="valor" placeholder="Pesquisar...">
                     </div>
 
                     <div class="col-md-3">
@@ -39,7 +39,7 @@
 
     <div class="row mt-4">
         <div class="col">
-            <table class="table table-hover">
+            <table class="table table-hover" id="groomingTable">
                 <thead>
                     <tr>
                         <th>#ID</th>
@@ -47,6 +47,7 @@
                         <th>Raça</th>
                         <th>Dia e Hora do Atendimento</th>
                         <th>Telefone Tutor</th>
+                        <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -76,4 +77,25 @@
             </table>
         </div>
     </div>
+@endsection
+    
+@section('scripts')
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const input = document.getElementById("valor");
+    const tipo = document.getElementById("tipo");
+    const tbody = document.querySelector("#groomingTable tbody");
+
+    function search() {
+        fetch(`{{ route('grooming.search.ajax') }}?tipo=${tipo.value}&valor=${input.value}`)
+            .then(response => response.text())
+            .then(html => {
+                tbody.innerHTML = html;
+            });
+    }
+
+    input.addEventListener("keyup", search);
+    tipo.addEventListener("change", search);
+});
+</script>
 @endsection

@@ -15,12 +15,6 @@ class Lodging extends Model
         'nome',
         'nome_animal',
         'dia_entrada',
-        'dia_saida',
-        'animal_id'
+        'dia_saida'
     ];
-
-    public function animal()
-    {
-        return $this->belongsTo(Animals::class, 'animal_id');
-    }
 }

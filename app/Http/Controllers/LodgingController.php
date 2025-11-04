@@ -3,35 +3,31 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lodging;
-use App\Models\Animals;
 use Illuminate\Http\Request;
 
 class LodgingController extends Controller
 {
     public function index()
     {
-        $dados = Lodging::with('animal')->get();
-        return view('lodging.list', ['dados' => $dados]);
+        $dados = Lodging::all();
+        return view('lodging.list', compact('dados'));
     }
 
     public function create()
     {
-        $animais = Animals::all();
-        return view('lodging.form', ['animais' => $animais]);
+        return view('lodging.form');
     }
 
     private function validateRequest(Request $request)
     {
         $request->validate([
             'nome' => 'required',
-            'animal_id' => 'required|exists:animals,id',
+            'nome_animal' => 'required',
             'dia_entrada' => 'required',
-            'dia_saida' => 'required',
         ], [
             'nome.required' => 'O nome do tutor é obrigatório',
-            'animal_id.required' => 'O animal é obrigatório',
+            'nome_animal.required' => 'O nome do animal é obrigatório',
             'dia_entrada.required' => 'A data de entrada é obrigatória',
-            'dia_saida.required' => 'A data de saida é obrigatória',
         ]);
     }
 
@@ -40,9 +36,6 @@ class LodgingController extends Controller
         $this->validateRequest($request);
         $data = $request->all();
 
-        $animal = Animals::find($data['animal_id']);
-        $data['nome_animal'] = $animal->nome_animal;
-
         Lodging::create($data);
         return redirect('lodging');
     }
@@ -50,20 +43,13 @@ class LodgingController extends Controller
     public function edit(string $id)
     {
         $dado = Lodging::findOrFail($id);
-        $animais = Animals::all();
-        return view('lodging.form', [
-            'dado' => $dado,
-            'animais' => $animais
-        ]);
+        return view('lodging.form', ['dado' => $dado]);
     }
 
     public function update(Request $request, string $id)
     {
         $this->validateRequest($request);
         $data = $request->all();
-
-        $animal = Animals::find($data['animal_id']);
-        $data['nome_animal'] = $animal->nome_animal;
 
         Lodging::updateOrCreate(['id' => $id], $data);
         return redirect('lodging');
@@ -76,15 +62,28 @@ class LodgingController extends Controller
         return redirect('lodging');
     }
 
-    public function search(Request $request)
-    {
-        if (!empty($request->valor)) {
-            $dados = Lodging::with('animal')
-                ->where($request->tipo, 'like', "%$request->valor%")
-                ->get();
-        } else {
-            $dados = Lodging::with('animal')->get();
-        }
-        return view('lodging.list', ["dados" => $dados]);
+public function search(Request $request)
+{
+    if (!empty($request->valor)) {
+        $dados = Lodging::where($request->tipo, 'like', "%$request->valor%")->get();
+    } else {
+        $dados = Lodging::all();
     }
+
+    return view('lodging_table', ["dados" => $dados]);
+}
+
+public function searchAjax(Request $request)
+{
+    $tipo = $request->tipo ?? 'nome';
+    $valor = $request->valor ?? '';
+
+    $dados = Lodging::when($valor, function ($query) use ($tipo, $valor) {
+        $query->where($tipo, 'like', "%{$valor}%");
+    })->get();
+
+    // retorna só o HTML do <tbody>
+    return view('partials.lodging_table', compact('dados'))->render();
+}
+
 }
