@@ -22,14 +22,18 @@ class AnimalsController extends Controller
     {
         $request->validate([
             'nome_animal' => 'required',
+            'nome_tutor' => 'required',
             'raca' => 'required',
-            'peso' => 'required',
+            'peso' => 'required|numeric',
             'telefone_tutor' => 'required',
         ], [
             'nome_animal.required' => 'O nome do animal é obrigatório',
+            'nome_tutor.required' => 'O nome do tutor é obrigatório',
             'raca.required' => 'A raça é obrigatória',
             'peso.required' => 'O peso é obrigatório',
-            'htelefone_tutor.required' => 'O telefone do tutor é obrigatório',
+            'peso.numeric' => 'O peso deve ser um número',
+            'peso.min' => 'O peso deve ser maior que zero',
+            'telefone_tutor.required' => 'O telefone do tutor é obrigatório',
         ]);
     }
 

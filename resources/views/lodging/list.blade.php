@@ -12,8 +12,8 @@
                     <div class="col-md-3">
                         <label class="form-label">Tipo</label>
                         <select id="tipo" name="tipo" class="form-select">
-                            <option value="nome">Nome do Tutor</option>
-                            <option value="nome_animal">Nome do Animal</option>
+                            <option value="animal.nome_animal">Nome do Animal</option>
+                            <option value="animal.nome_tutor">Nome do Tutor</option>
                         </select>
                     </div>
                     <div class="col-md-4">
@@ -27,9 +27,14 @@
                         </button>
                     </div>
                     <div class="col-md-2">
-                        <a class="btn btn-success mt-4" href="{{ url('/lodging/create') }}">
-                            <i class="fa-solid fa-plus"></i> Novo
-                        </a>
+                        <div class="d-flex gap-2 mt-4">
+                            <a class="btn btn-success" href="{{ route('lodging.create') }}">
+                                <i class="fa-solid fa-plus"></i> Nova Estadia
+                            </a>
+                            <a class="btn btn-outline-info" href="{{ route('animals.index') }}" title="Cadastrar Novo Animal">
+                                <i class="fa-solid fa-paw"></i> Novo Animal
+                            </a>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -38,42 +43,52 @@
 
     <div class="row mt-4">
         <div class="col">
-            <table class="table table-hover" id="lodgingTable">
-                <thead>
-                    <tr>
-                        <th>#ID</th>
-                        <th>Tutor</th>
-                        <th>Animal</th>
-                        <th>Dia Entrada</th>
-                        <th>Dia Saída</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($dados as $item)
+            @if(session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if($dados->count() > 0)
+                <table class="table table-hover" id="lodgingTable">
+                    <thead>
                         <tr>
-                            <td>{{ $item->id }}</td>
-                            <td>{{ $item->nome }}</td>
-                            <td>{{ $item->nome_animal }}</td>
-                            <td>{{ $item->dia_entrada ? \Carbon\Carbon::parse($item->dia_entrada)->format('d/m/Y') : '-' }}</td>
-                            <td>{{ $item->dia_saida ? \Carbon\Carbon::parse($item->dia_saida)->format('d/m/Y') : '-' }}</td>
-                            <td>
-                                <a href="{{ route('lodging.edit', $item->id) }}" class="btn btn-outline-warning btn-sm">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </a>
-                                <form action="{{ route('lodging.destroy', $item->id) }}" method="post" class="d-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-outline-danger"
-                                        onclick="return confirm('Deseja remover este registro?')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            </td>
+                            <th>#ID</th>
+                            <th>Animal</th>
+                            <th>Tutor</th>
+                            <th>Dia Entrada</th>
+                            <th>Dia Saída</th>
+                            <th>Ações</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach ($dados as $item)
+                            <tr>
+                                <td>{{ $item->id }}</td>
+                                <td>{{ $item->animal->nome_animal }}</td>
+                                <td>{{ $item->animal->nome_tutor }}</td>
+                                <td>{{ $item->dia_entrada ? \Carbon\Carbon::parse($item->dia_entrada)->format('d/m/Y') : '-' }}</td>
+                                <td>{{ $item->dia_saida ? \Carbon\Carbon::parse($item->dia_saida)->format('d/m/Y') : '-' }}</td>
+                                <td>
+                                    <a href="{{ route('lodging.edit', $item->id) }}" class="btn btn-outline-warning btn-sm">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    <form action="{{ route('lodging.destroy', $item->id) }}" method="post" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger"
+                                            onclick="return confirm('Deseja remover esta estadia?')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @else
+                <div class="alert alert-info">Nenhuma estadia cadastrada.</div>
+            @endif
         </div>
     </div>
 @endsection

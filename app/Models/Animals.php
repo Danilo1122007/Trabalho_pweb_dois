@@ -15,7 +15,8 @@ class Animals extends Model
         'nome_animal',
         'raca',
         'peso',
-        'telefone_tutor'
+        'telefone_tutor',
+        'nome_tutor'
     ];
 
     public function lodgings()

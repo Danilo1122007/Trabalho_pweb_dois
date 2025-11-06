@@ -84,6 +84,9 @@
                         @endforeach
                     </tbody>
                 </table>
+            @else
+                <div class="alert alert-info">Nenhum animal cadastrado.</div>
+            @endif
         </div>
     </div>
 @endsection

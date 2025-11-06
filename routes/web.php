@@ -11,6 +11,8 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AnimalsController;
+
 
 Route::get('/', [InicioController::class, 'index'])->name('inicio');
 Route::get('/inicio', [InicioController::class, 'index'])->name('inicio');
@@ -60,9 +62,19 @@ Route::post('/lodging/search', [LodgingController::class, 'search'])->name('lodg
 Route::get('/lodging/search-ajax', [LodgingController::class, 'searchAjax'])->name('lodging.search.ajax');//criar ajax
 Route::delete('/lodging/{id}', [LodgingController::class, 'destroy'])->name('lodging.destroy');
 
-
-
 /**
+ * Animals
+ */
+Route::get('/animals', [AnimalsController::class, 'index'])->name('animals.index');
+Route::get('/animals/create', [AnimalsController::class, 'create'])->name('animals.create');
+Route::post('/animals', [AnimalsController::class, 'store'])->name('animals.store');
+Route::get('/animals/{id}/edit', [AnimalsController::class, 'edit'])->name('animals.edit');
+Route::put('/animals/{id}', [AnimalsController::class, 'update'])->name('animals.update');
+Route::post('/animals/search', [AnimalsController::class, 'search'])->name('animals.search');
+Route::get('/animals/search-ajax', [AnimalsController::class, 'searchAjax'])->name('animals.search.ajax');
+Route::delete('/animals/{id}', [AnimalsController::class, 'destroy'])->name('animals.destroy');
+
+/**n
  * Products
  */
 // Products

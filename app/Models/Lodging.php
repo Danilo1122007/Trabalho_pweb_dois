@@ -12,9 +12,13 @@ class Lodging extends Model
     protected $table = "lodging";
 
     protected $fillable = [
-        'nome',
-        'nome_animal',
+        'animal_id',
         'dia_entrada',
         'dia_saida'
     ];
+
+    public function animal()
+    {
+        return $this->belongsTo(Animals::class, 'animal_id');
+    }
 }
