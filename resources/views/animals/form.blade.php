@@ -8,11 +8,13 @@
         } else {
             $action = route('animals.store');
         }
+        
+        $nome_foto = !empty($dado->foto) ? $dado->foto : 'sem_imagem.png';
     @endphp
 
     <h3 class="mb-4">{{ !empty($dado->id) ? 'Editar' : 'Novo' }} Animal</h3>
 
-    <form action="{{ $action }}" method="post">
+    <form action="{{ $action }}" method="post" enctype="multipart/form-data">
         @csrf
 
         @if (!empty($dado->id))
@@ -63,6 +65,18 @@
                        name="telefone_tutor" value="{{ old('telefone_tutor', $dado->telefone_tutor ?? '') }}" 
                        placeholder="(00) 00000-0000" required>
                 @error('telefone_tutor')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <label for="foto" class="form-label">Foto do Animal</label>
+                <img src="/storage/{{ $nome_foto }}" width="200px" height="200px" alt="img" class="d-block mb-2">
+                <input type="file" class="form-control @error('foto') is-invalid @enderror" 
+                       name="foto" accept="image/*">
+                @error('foto')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>

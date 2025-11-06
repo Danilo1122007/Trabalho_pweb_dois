@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-
     public function up(): void
     {
         Schema::create('animals', function (Blueprint $table) {
@@ -16,6 +15,7 @@ return new class extends Migration
             $table->decimal('peso', 8, 2);
             $table->string('telefone_tutor', 20);
             $table->string('nome_tutor', 100);
+            $table->string('foto')->nullable();
             $table->timestamps();
         });
     }

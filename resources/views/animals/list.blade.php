@@ -49,6 +49,7 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
+                            <th>Foto</th>
                             <th>#ID</th>
                             <th>Nome do Animal</th>
                             <th>Raça</th>
@@ -60,7 +61,11 @@
                     </thead>
                     <tbody>
                         @foreach ($dados as $item)
+                            @php
+                                $nome_foto = !empty($item->foto) ? $item->foto : 'sem_imagem.png';
+                            @endphp
                             <tr>
+                                <td><img src="/storage/{{ $nome_foto }}" width="100px" height="100px" alt="img"></td>
                                 <td>{{ $item->id }}</td>
                                 <td>{{ $item->nome_animal }}</td>
                                 <td>{{ $item->raca }}</td>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Animals;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AnimalsController extends Controller
 {
@@ -26,14 +27,16 @@ class AnimalsController extends Controller
             'raca' => 'required',
             'peso' => 'required|numeric',
             'telefone_tutor' => 'required',
+            'foto' => 'nullable|image|mimes:png,jpg,jpeg'
         ], [
             'nome_animal.required' => 'O nome do animal é obrigatório',
             'nome_tutor.required' => 'O nome do tutor é obrigatório',
             'raca.required' => 'A raça é obrigatória',
             'peso.required' => 'O peso é obrigatório',
             'peso.numeric' => 'O peso deve ser um número',
-            'peso.min' => 'O peso deve ser maior que zero',
             'telefone_tutor.required' => 'O telefone do tutor é obrigatório',
+            'foto.image' => 'A foto deve ser uma imagem',
+            'foto.mimes' => 'A foto deve ser das extensões: PNG, JPEG, JPG',
         ]);
     }
 
@@ -41,6 +44,19 @@ class AnimalsController extends Controller
     {
         $this->validateRequest($request);
         $data = $request->all();
+        $foto = $request->file('foto');
+
+        if ($foto) {
+            $nome_foto = date('YmdiHs') . "." . $foto->getClientOriginalExtension();
+            $diretorio = "imagem/animal/";
+
+            $foto->storeAs(
+                $diretorio,
+                $nome_foto,
+                'public'
+            );
+            $data['foto'] = $diretorio . $nome_foto;
+        }
 
         Animals::create($data);
         return redirect('animals');
@@ -56,6 +72,19 @@ class AnimalsController extends Controller
     {
         $this->validateRequest($request);
         $data = $request->all();
+        $foto = $request->file('foto');
+
+        if ($foto) {
+            $nome_foto = date('YmdiHs') . "." . $foto->getClientOriginalExtension();
+            $diretorio = "imagem/animal/";
+
+            $foto->storeAs(
+                $diretorio,
+                $nome_foto,
+                'public'
+            );
+            $data['foto'] = $diretorio . $nome_foto;
+        }
 
         Animals::updateOrCreate(['id' => $id], $data);
         return redirect('animals');
@@ -80,5 +109,17 @@ class AnimalsController extends Controller
             $dados = Animals::all();
         }
         return view('animals.list', ["dados" => $dados]);
+    }
+
+    public function searchAjax(Request $request)
+    {
+        $tipo = $request->tipo ?? 'nome_animal';
+        $valor = $request->valor ?? '';
+
+        $dados = Animals::when($valor, function ($query) use ($tipo, $valor) {
+            $query->where($tipo, 'like', "%{$valor}%");
+        })->get();
+
+        return view('partials.animals_table', compact('dados'))->render();
     }
 }
