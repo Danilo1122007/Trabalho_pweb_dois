@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Models\Lodging;
 use App\Models\Animals;
 use Illuminate\Http\Request;
+use PDF;
 
 class LodgingController extends Controller
 {
@@ -83,5 +84,18 @@ class LodgingController extends Controller
         })->get();
 
         return view('partials.lodging_table', compact('dados'))->render();
+    }
+
+    public function report()
+    {
+        $dados = Lodging::with('animal')->orderBy('dia_entrada')->get();
+
+        $data = [
+            'titulo' => 'Relatório de Reservas de Estadia',
+            'dados' => $dados,
+        ];
+
+        $pdf = PDF::loadView('lodging.report', $data);
+        return $pdf->download('relatorio_reservas_estadia.pdf');
     }
 }

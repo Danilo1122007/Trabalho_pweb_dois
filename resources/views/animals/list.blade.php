@@ -32,6 +32,11 @@
                             <i class="fa-solid fa-plus"></i> Novo Animal
                         </a>
                     </div>
+                    <div class="col-md-2">
+                        <a class="btn btn-warning mt-4" href="{{ route('animals.chart') }}">
+                            <i class="fa-solid fa-chart-pie"></i> Gerar Gráfico
+                        </a>
+                    </div>
                 </div>
             </form>
         </div>

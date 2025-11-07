@@ -36,6 +36,11 @@
                             </a>
                         </div>
                     </div>
+                    <div class="col-md-2">
+                        <a class="btn btn-danger mt-4" href="{{ route('lodging.report') }}">
+                            <i class="fa-solid fa-file-pdf"></i> Relatório PDF
+                        </a>
+                    </div>
                 </div>
             </form>
         </div>

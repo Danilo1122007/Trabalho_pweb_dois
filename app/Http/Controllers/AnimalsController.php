@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Animals;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Charts\AnimalsPesoChart;
 
 class AnimalsController extends Controller
 {
@@ -122,4 +123,10 @@ class AnimalsController extends Controller
 
         return view('partials.animals_table', compact('dados'))->render();
     }
+
+    public function chart(AnimalsPesoChart $chart)
+    {
+        return view('animals.chart', ['chart' => $chart->build()]);
+    }
+
 }

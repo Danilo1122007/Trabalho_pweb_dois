@@ -21,7 +21,6 @@ class ParkingQtdChart
         ->groupBy('vehicle_type_id')
         ->get();
 
-    // Obtém os nomes dos tipos de veículo
     $labels = $dados->map(fn($item) => $item->vehicleType->nome ?? 'Desconhecido')->toArray();
     $values = $dados->pluck('total')->toArray();
 
