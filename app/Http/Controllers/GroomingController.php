@@ -82,7 +82,6 @@ public function searchAjax(Request $request)
         $query->where($tipo, 'like', "%{$valor}%");
     })->get();
 
-    // retorna só o HTML do <tbody>
     return view('partials.grooming_table', compact('dados'))->render();
 }
 

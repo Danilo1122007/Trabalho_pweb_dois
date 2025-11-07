@@ -1,4 +1,4 @@
-@extends('layouts') 
+@extends('layouts')
 @section('titulo', 'Cadastrar Produto/Serviço')
 
 @section('conteudo')
@@ -17,7 +17,6 @@
 <form method="POST" action="{{ route('products.store') }}" enctype="multipart/form-data">
   @csrf
 
-  {{-- 🔹 Campo de imagem --}}
   <div class="mb-3">
     <label for="imagem" class="form-label">Imagem (opcional)</label>
     <input type="file" name="imagem" id="imagem" class="form-control">

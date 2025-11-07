@@ -2,7 +2,6 @@
 
 @section('conteudo')
 <div class="container mt-4">
-  {{-- 🔹 Cabeçalho com título e botão de criar --}}
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="text-center mb-0">Lista de Produtos e Serviços</h2>
 
@@ -11,7 +10,6 @@
     </a>
   </div>
 
-  {{-- 🔹 Formulário de busca --}}
 <form method="GET" action="{{ route('products.search') }}" class="row g-2 mb-4">
 
     <div class="col-md-3">
@@ -23,11 +21,11 @@
     </div>
 
     <div class="col-md-6">
-      <input 
-        type="text" 
-        name="search" 
-        value="{{ request('search') }}" 
-        class="form-control" 
+      <input
+        type="text"
+        name="search"
+        value="{{ request('search') }}"
+        class="form-control"
         placeholder="Digite o nome do produto ou serviço...">
     </div>
 
@@ -37,7 +35,6 @@
     </div>
   </form>
 
-  {{-- 🔹 Tabela de produtos --}}
   <div class="table-responsive">
     <table class="table table-striped table-bordered align-middle text-center">
       <thead class="table-dark">
@@ -53,28 +50,23 @@
       <tbody>
         @forelse($products as $p)
           <tr class="align-middle">
-            {{-- 🔹 Imagem --}}
             <td rowspan="2" class="align-middle">
               @if($p->imagem)
-                <img src="{{ asset('storage/' . $p->imagem) }}" 
+                <img src="{{ asset('storage/' . $p->imagem) }}"
                      width="130" height="130"
-                     class="rounded shadow-sm border object-fit-cover" 
+                     class="rounded shadow-sm border object-fit-cover"
                      alt="{{ $p->name }}">
               @else
                 <span class="text-muted">Sem imagem</span>
               @endif
             </td>
 
-            {{-- 🔹 Nome --}}
             <td>{{ $p->name }}</td>
 
-            {{-- 🔹 Tipo --}}
             <td>{{ ucfirst($p->type) }}</td>
 
-            {{-- 🔹 Preço --}}
             <td>R$ {{ number_format($p->price, 2, ',', '.') }}</td>
 
-            {{-- 🔹 Quantidade / Data / Hora --}}
             <td>
               @if($p->type === 'produto')
                 {{ $p->quantity }} unid.
@@ -87,37 +79,33 @@
               @endif
             </td>
 
-            {{-- 🔹 Ações --}}
             <td>
               <div class="d-flex align-items-center justify-content-center flex-wrap gap-2">
-                {{-- ✏️ Editar --}}
                 <a href="{{ route('products.edit', $p->id) }}" class="btn btn-sm btn-warning">
                   Editar
                 </a>
 
-                {{-- 🗑️ Excluir --}}
-                <form method="POST" action="{{ route('products.destroy', $p->id) }}" 
+                <form method="POST" action="{{ route('products.destroy', $p->id) }}"
                       onsubmit="return confirm('Tem certeza que deseja excluir este item?')">
                   @csrf
                   @method('DELETE')
                   <button class="btn btn-sm btn-danger">Excluir</button>
                 </form>
 
-                {{-- 🛒 Adicionar ao carrinho --}}
                 @if($p->type === 'produto' && $p->quantity <= 0)
                   <span class="text-danger fw-bold">Esgotado</span>
                 @else
-                  <form method="POST" action="{{ route('products.addToCart', $p->id) }}" 
+                  <form method="POST" action="{{ route('products.addToCart', $p->id) }}"
                         class="d-flex align-items-center">
                     @csrf
                     @if($p->type === 'produto')
-                      <input 
-                        type="number" 
-                        name="quantity" 
-                        value="1" 
-                        min="1" 
-                        max="{{ $p->quantity }}" 
-                        class="form-control form-control-sm me-2" 
+                      <input
+                        type="number"
+                        name="quantity"
+                        value="1"
+                        min="1"
+                        max="{{ $p->quantity }}"
+                        class="form-control form-control-sm me-2"
                         style="width: 80px;">
                     @endif
                     <button class="btn btn-sm btn-primary">
@@ -129,7 +117,6 @@
             </td>
           </tr>
 
-          {{-- 🔹 Descrição abaixo --}}
           <tr>
             <td colspan="5" class="text-start bg-light">
               <strong>Descrição:</strong>
@@ -147,7 +134,6 @@
     </table>
   </div>
 
-  {{-- 🔹 Paginação --}}
   <div class="d-flex justify-content-center mt-3">
     {{ $products->appends(request()->query())->links() }}
   </div>

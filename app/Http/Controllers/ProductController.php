@@ -22,9 +22,6 @@ class ProductController extends Controller
         return view('products.create');
     }
 
-    /**
-     * 🔹 Validação dos campos
-     */
     private function validateRequest(Request $request)
     {
         return $request->validate([
@@ -39,19 +36,14 @@ class ProductController extends Controller
         ]);
     }
 
-    /**
-     * 🔹 Salva um novo produto ou serviço
-     */
 public function store(Request $request)
 {
     $data = $this->validateRequest($request);
 
-    // 🔹 Se for serviço, define quantidade = 0
     if ($data['type'] === 'servico') {
         $data['quantity'] = 0;
     }
 
-    // 🔸 Verifica limite de serviços no mesmo horário/data
     if (
         $data['type'] === 'servico' &&
         !empty($data['service_date']) &&
@@ -67,7 +59,6 @@ public function store(Request $request)
         }
     }
 
-    // 🔸 Upload de imagem
     if ($request->hasFile('imagem')) {
         $folder = $data['type'] === 'servico' ? 'imagens/servicos' : 'imagens/produtos';
         $data['imagem'] = $request->file('imagem')->store($folder, 'public');
@@ -78,38 +69,30 @@ public function store(Request $request)
 
     return redirect()->route('products.index')->with('success', 'Cadastrado com sucesso!');
 }
-    /**
-     * 🔹 Exibe formulário de edição
-     */
+
     public function edit(string $id)
     {
         $product = Product::findOrFail($id);
         return view('products.edit', compact('product'));
     }
 
-    /**
-     * 🔹 Atualiza produto ou serviço existente
-     */
+
 public function update(Request $request, string $id)
 {
     $product = Product::findOrFail($id);
     $data = $this->validateRequest($request);
 
-    // 🔹 Se for serviço, define quantidade = 0
     if ($data['type'] === 'servico') {
         $data['quantity'] = 0;
     }
 
-    // 🔸 Substituição da imagem
     if ($request->hasFile('imagem')) {
         $folder = $data['type'] === 'servico' ? 'imagens/servicos' : 'imagens/produtos';
 
-        // Apaga imagem antiga
         if ($product->imagem && Storage::disk('public')->exists($product->imagem)) {
             Storage::disk('public')->delete($product->imagem);
         }
 
-        // Salva nova imagem
         $data['imagem'] = $request->file('imagem')->store($folder, 'public');
     }
 
@@ -119,9 +102,6 @@ public function update(Request $request, string $id)
     return redirect()->route('products.index')->with('success', 'Atualizado com sucesso!');
 }
 
-    /**
-     * 🔹 Exclui produto e remove imagem associada
-     */
     public function destroy(string $id)
     {
         $product = Product::findOrFail($id);
@@ -134,42 +114,33 @@ public function update(Request $request, string $id)
         return back()->with('success', 'Removido com sucesso!');
     }
 
-    /**
-     * 🔹 Pesquisa de produtos e serviços
-     */
+
 public function search(Request $request)
 {
     $query = Product::query();
 
-    // 🔹 Filtro por tipo (produto ou serviço)
     if ($request->filled('type')) {
         $query->where('type', $request->type);
     }
 
-    // 🔹 Filtro por nome (busca parcial)
     if ($request->filled('search')) {
         $query->where('name', 'like', '%' . $request->search . '%');
     }
 
-    // 🔹 Paginação com filtros preservados
     $products = $query->orderBy('name')->paginate(10)->appends($request->query());
 
     return view('products.list', compact('products'));
 }
 
 
-    /**
-     * 🔹 Adiciona produto ao carrinho
-     */
+
 public function addToCart(Request $request, $id)
 {
     $product = Product::findOrFail($id);
 
     if ($product->type === 'servico') {
-        // 🔹 Serviços não precisam de quantidade
         $quantity = 1;
     } else {
-        // 🔹 Produtos precisam validar quantidade
         $validated = $request->validate([
             'quantity' => 'required|integer|min:1'
         ]);

@@ -1,5 +1,4 @@
 <?php
-// LodgingController.php
 
 namespace App\Http\Controllers;
 

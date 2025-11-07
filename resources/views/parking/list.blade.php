@@ -3,7 +3,6 @@
 @section('conteudo')
 <div class="container mt-4">
 
-  {{-- 🔹 Cabeçalho --}}
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="text-center mb-0">Listagem de Estacionamento</h2>
 
@@ -12,14 +11,12 @@
     </a>
   </div>
 
-  {{-- 🔹 Resumo de vagas --}}
   <div class="alert alert-info text-center fw-semibold mb-4">
     🚗 <strong>Total:</strong> {{ $total }} &nbsp; | &nbsp;
     🅿️ <strong>Ocupadas:</strong> {{ $ocupadas }} &nbsp; | &nbsp;
     ✅ <strong>Disponíveis:</strong> {{ $livres }}
   </div>
 
-  {{-- 🔹 Formulário de busca --}}
   <form action="{{ route('parking.search') }}" method="POST" class="row g-2 mb-4">
     @csrf
 
@@ -32,11 +29,11 @@
     </div>
 
     <div class="col-md-6">
-      <input 
-        type="text" 
-        name="valor" 
-        value="{{ request('valor') }}" 
-        class="form-control" 
+      <input
+        type="text"
+        name="valor"
+        value="{{ request('valor') }}"
+        class="form-control"
         placeholder="Digite o valor da busca...">
     </div>
 
@@ -46,13 +43,11 @@
     </div>
   </form>
 
-  {{-- 🔹 Botões extras --}}
   <div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
     <a class="btn btn-danger" href="{{ url('/parking/report') }}">📄 Relatório PDF</a>
     <a class="btn btn-warning" href="{{ url('/parking/chart') }}">📊 Gerar Gráfico</a>
   </div>
 
-  {{-- 🔹 Tabela estilizada --}}
   <div class="table-responsive">
     <table class="table table-striped table-bordered align-middle text-center">
       <thead class="table-dark">
@@ -74,43 +69,33 @@
             $nome_imagem = $item->imagem ?? 'sem_imagem.png';
           @endphp
           <tr>
-            {{-- 🔹 Imagem --}}
             <td rowspan="2" class="align-middle">
-              <img 
-                src="{{ asset('storage/' . $nome_imagem) }}" 
+              <img
+                src="{{ asset('storage/' . $nome_imagem) }}"
                 width="120" height="120"
                 class="rounded shadow-sm border object-fit-cover"
                 alt="{{ $item->modelo }}">
             </td>
 
-            {{-- 🔹 ID --}}
             <td>{{ $item->id }}</td>
 
-            {{-- 🔹 Modelo --}}
             <td>{{ $item->modelo }}</td>
 
-            {{-- 🔹 Motorista --}}
             <td>{{ $item->motorista }}</td>
 
-            {{-- 🔹 Tipo de veículo --}}
             <td>{{ $item->vehicleType->nome ?? '-' }}</td>
 
-            {{-- 🔹 Peso --}}
             <td>{{ $item->weightClass->nome ?? '-' }}</td>
 
-            {{-- 🔹 Entrada / Saída --}}
             <td>{{ $item->hora_entrada }}</td>
             <td>{{ $item->hora_saida ?? '-' }}</td>
 
-            {{-- 🔹 Ações --}}
             <td>
               <div class="d-flex align-items-center justify-content-center flex-wrap gap-2">
-                {{-- ✏️ Editar --}}
                 <a href="{{ route('parking.edit', $item->id) }}" class="btn btn-sm btn-warning">
                   Editar
                 </a>
 
-                {{-- 🗑️ Excluir --}}
                 <form action="{{ route('parking.destroy', $item->id) }}" method="POST"
                       onsubmit="return confirm('Deseja remover este registro?')">
                   @csrf
@@ -121,7 +106,6 @@
             </td>
           </tr>
 
-          {{-- 🔹 Linha de descrição opcional --}}
           <tr>
             <td colspan="8" class="text-start bg-light">
               <strong>Observações:</strong>
@@ -137,7 +121,6 @@
     </table>
   </div>
 
-  {{-- 🔹 Paginação --}}
   <div class="d-flex justify-content-center mt-3">
     {{ $dados->appends(request()->query())->links() }}
   </div>

@@ -32,7 +32,7 @@ public function report()
         'dados'  => $orders,
     ];
 
-    $pdf = \PDF::loadView('orders.report', $data);
+    $pdf = PDF::loadView('orders.report', $data);
 
     return $pdf->download('relatorio_pedidos.pdf');
 }

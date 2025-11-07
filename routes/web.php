@@ -38,6 +38,7 @@ Route::post('/grooming', [GroomingController::class, 'store'])->name('grooming.s
 Route::get('/grooming/edit/{id}', [GroomingController::class, 'edit'])->name('grooming.edit');
 Route::put('/grooming/update/{id}', [GroomingController::class, 'update'])->name('grooming.update');
 Route::post('/grooming/search', [GroomingController::class, 'search'])->name('grooming.search');
+Route::delete('/grooming/{id}', [GroomingController::class, 'destroy'])->name('grooming.destroy');
 Route::get('/grooming/search-ajax', [GroomingController::class, 'searchAjax'])->name('grooming.search.ajax');
 
 Route::get('/lodging', [LodgingController::class, 'index'])->name('lodging.index');

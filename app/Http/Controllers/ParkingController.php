@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Http\Controllers;
 
@@ -12,16 +12,12 @@ use PDF;
 
 class ParkingController extends Controller
 {
-    /** Número máximo de vagas no estacionamento */
     private const LIMITE_VAGAS = 50;
 
     public function index()
     {
-        // Eager loading (carrega também o tipo de veículo)
-        // 🔹 Alterado: de ->get() para ->paginate(10)
         $dados = Parking::with('vehicleType')->paginate(10);
 
-        // Conta apenas os veículos ainda estacionados
         $ocupadas = Parking::whereNull('hora_saida')->count();
         $totalVagas = self::LIMITE_VAGAS;
         $livres = $totalVagas - $ocupadas;
@@ -42,7 +38,6 @@ class ParkingController extends Controller
         return view('parking.form', compact('vehicleTypes', 'weightClasses'));
     }
 
-    /** Validação reutilizável */
     private function validateRequest(Request $request)
     {
         $request->validate([
@@ -67,7 +62,6 @@ class ParkingController extends Controller
 
     public function store(Request $request)
     {
-        // Limite de vagas
         if (Parking::whereNull('hora_saida')->count() >= self::LIMITE_VAGAS) {
             return redirect('parking')->with('error', 'Estacionamento lotado! Limite de 50 vagas atingido.');
         }
@@ -152,7 +146,6 @@ class ParkingController extends Controller
 
         if (!empty($request->valor)) {
             if ($request->tipo === 'vehicle_type_id') {
-                // Busca pelo nome do tipo de veículo
                 $query->whereHas('vehicleType', function ($q) use ($request) {
                     $q->where('nome', 'like', "%{$request->valor}%");
                 });
@@ -161,7 +154,6 @@ class ParkingController extends Controller
             }
         }
 
-        // 🔹 Alterado: de ->get() para ->paginate(10)
         $dados = $query->paginate(10)->appends($request->query());
 
         $totalVagas = self::LIMITE_VAGAS;
@@ -185,7 +177,7 @@ public function report()
         'dados'  => $dados,
     ];
 
-    $pdf = \PDF::loadView('parking.report', $data);
+    $pdf = PDF::loadView('parking.report', $data);
 
     return $pdf->download('relatorio_estacionamento.pdf');
 }

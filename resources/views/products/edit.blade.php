@@ -58,7 +58,6 @@
     </div>
   </div>
 
-  {{-- 🔹 Campo de imagem --}}
   <div class="mb-3">
     <label for="imagem" class="form-label">Imagem (opcional)</label>
     <input type="file" name="imagem" id="imagem" class="form-control" accept="image/*">
@@ -82,7 +81,6 @@
     document.getElementById('service-fields').style.display = type === 'servico' ? 'block' : 'none';
   });
 
-  // 🔹 Pré-visualização da imagem nova
   document.getElementById('imagem').addEventListener('change', function(event) {
     const previewContainer = document.querySelector('.mt-2');
     if (event.target.files.length > 0) {

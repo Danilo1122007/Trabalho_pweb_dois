@@ -15,9 +15,7 @@
     </div>
 </section>
 
-<!-- Hero Section com Carousel Bootstrap -->
 <div id="animalCarousel" class="carousel slide" data-bs-ride="carousel">
-    <!-- Indicadores -->
     <div class="carousel-indicators">
         <button type="button" data-bs-target="#animalCarousel" data-bs-slide-to="0" class="active"></button>
         <button type="button" data-bs-target="#animalCarousel" data-bs-slide-to="1"></button>
@@ -25,9 +23,7 @@
         <button type="button" data-bs-target="#animalCarousel" data-bs-slide-to="3"></button>
     </div>
 
-    <!-- Slides -->
     <div class="carousel-inner">
-        <!-- Slide 1 -->
         <div class="carousel-item active">
             <img src="{{ asset('img/seila.png') }}" class="d-block w-100" style="height: 500px; object-fit: cover;" alt="AnimalHouse">
             <div class="carousel-caption d-none d-md-block">
@@ -36,7 +32,6 @@
             </div>
         </div>
 
-        <!-- Slide 2 -->
         <div class="carousel-item">
             <img src="{{ asset('img/ambienteexterno.jpg') }}" class="d-block w-100" style="height: 500px; object-fit: cover;" alt="Promoções">
             <div class="carousel-caption d-none d-md-block">
@@ -45,7 +40,6 @@
             </div>
         </div>
 
-        <!-- Slide 3 -->
         <div class="carousel-item">
             <img src="{{ asset('img/cachorro.webp') }}" class="d-block w-100" style="height: 500px; object-fit: cover;" alt="Conforto">
             <div class="carousel-caption d-none d-md-block">
@@ -54,7 +48,6 @@
             </div>
         </div>
 
-        <!-- Slide 4 -->
         <div class="carousel-item">
             <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" class="d-block w-100" style="height: 500px; object-fit: cover;" alt="Profissionais">
             <div class="carousel-caption d-none d-md-block">
@@ -64,7 +57,6 @@
         </div>
     </div>
 
-    <!-- Controles -->
     <button class="carousel-control-prev" type="button" data-bs-target="#animalCarousel" data-bs-slide="prev">
         <span class="carousel-control-prev-icon"></span>
         <span class="visually-hidden">Anterior</span>

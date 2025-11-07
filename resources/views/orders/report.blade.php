@@ -75,7 +75,6 @@
                         $imagemPath = public_path('storage/' . $nome_imagem);
                     @endphp
                     <tr>
-                        {{-- 🔹 Linha principal --}}
                         <td rowspan="2">
                             @if(file_exists($imagemPath))
                                 <img src="{{ $imagemPath }}" width="60" height="60">
@@ -90,7 +89,6 @@
                         <td>R$ {{ number_format($item->price * $item->quantity, 2, ',', '.') }}</td>
                     </tr>
 
-                    {{-- 🔹 Linha de descrição --}}
                     <tr>
                         <td colspan="5" class="descricao">
                             <strong>Descrição:</strong>
